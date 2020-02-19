@@ -17,6 +17,7 @@ var svgContainer = d3.select("#barchart").append("svg")
 						.attr("height", height)
 						.attr("width", width);
 
+
 // var circle = svgContainer.append("circle")
 // 						.attr("cx", 30)
 // 						.attr("cy", 30)
@@ -98,17 +99,24 @@ chart_group.append("g")
 chart_group.append("g")
     .call(d3.axisLeft(y));
 
-var map = d3.map(data[0]); 
+var map = d3.map(data[0]);
 
+// Include <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script> in your code!
+var myColor = d3.scaleSequential().domain([1,300])
+  .interpolator(d3.interpolatePuRd);
 
 chart_group.selectAll(".bar")
     .data(map.entries())
     .enter()
-    .append("rect")
-    .attr("class", "bar")
-    .attr("x", 1)
-    .attr("y", function (d) { return y(d.key) })
-    .attr("width", function(d) { return x(d.value); })
+    .append("circle")
+    .transition()
+    .duration(2000)
+    .style("opacity")
+    .style("fill", function(d) { return myColor(x(d.value));})
+    .attr("class", "dot")
+    .attr("r", 10)
+    .attr("cy", function (d) { return y(d.key) + 20 })
+    .attr("cx", function(d) { return x(d.value); })
     .attr("height", y.bandwidth())
     .on("mouseover", function(d, i) {
         var x_var = d.key;
@@ -117,10 +125,10 @@ chart_group.selectAll(".bar")
         var label = info[0]
         var definition = info[1];
 
-        displayTooltip("<b>Variable: </b>" + label + "<br /><b>Percentage: </b>" + 
+        displayTooltip("<b>Variable: </b>" + label + "<br /><b>Percentage: </b>" +
             value + "%<br /><b>Explanation: </b>" + definition)
 
-        //d3.select(this).attr("fill", "DarkOrange");
+        // d3.select(this).attr("fill", "DarkOrange");
     })
     .on("mousemove", function(d, i) {
         var x_var = d.key;
@@ -129,7 +137,7 @@ chart_group.selectAll(".bar")
         var label = info[0]
         var definition = info[1];
 
-        displayTooltip("<b>Variable: </b>" + label + "<br /><b>Percentage: </b>" + 
+        displayTooltip("<b>Variable: </b>" + label + "<br /><b>Percentage: </b>" +
             value + "%<br /><b>Explanation: </b>" + definition)
 
         //d3.select(this).attr("fill", "DarkOrange");
@@ -140,9 +148,9 @@ chart_group.selectAll(".bar")
     });
 
 // text label for the x axis
-svgContainer.append("text")             
+svgContainer.append("text")
   .attr("transform",
-        "translate(" + (width/2 - (100/2)) + " ," + 
+        "translate(" + (width/2 - (100/2)) + " ," +
                        (chart_height + 100) + ")")
   .style("text-anchor", "middle")
   .style("font-size", "13px")
@@ -153,9 +161,10 @@ chart_group.append("text")
         .attr("id", "chart-title")
         .attr("y", -25)
         .attr("x", chart_width / 2)
-        .style("font-weight", "bold")               
+        .style("font-weight", "bold")
         .style("text-anchor", "middle")
         .text("Rental statistics of " + selected_area);
+
 
 // Code for vertical bar chart
 // chart_group.selectAll(".bar")
@@ -174,7 +183,7 @@ chart_group.append("text")
 //         var label = info[0]
 //         var definition = info[1];
 
-//         displayTooltip("<b>Variable: </b>" + label + "<br /><b>Percentage: </b>" + 
+//         displayTooltip("<b>Variable: </b>" + label + "<br /><b>Percentage: </b>" +
 //             value + "%<br /><b>Explanation: </b>" + definition)
 
 //         //d3.select(this).attr("fill", "DarkOrange");
@@ -186,7 +195,7 @@ chart_group.append("text")
 //         var label = info[0]
 //         var definition = info[1];
 
-//         displayTooltip("<b>Variable: </b>" + label + "<br /><b>Percentage: </b>" + 
+//         displayTooltip("<b>Variable: </b>" + label + "<br /><b>Percentage: </b>" +
 //             value + "%<br /><b>Explanation: </b>" + definition)
 
 //         //d3.select(this).attr("fill", "DarkOrange");
@@ -195,5 +204,3 @@ chart_group.append("text")
 //         hideTooltip();
 //         //d3.select(this).attr("fill", "steelblue");
 //     });
-
-
